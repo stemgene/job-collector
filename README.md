@@ -1,1 +1,3 @@
-# job-collector
+# job_finder
+
+During my job search experience, I primarily relied on platforms like LinkedIn, Glassdoor, and Indeed by entering keywords to search for available job positions. However, in the city where I reside, there are numerous local companies that do not post their job openings on these popular job boards due to their smaller scale. Additionally, many companies may not collaborate with these job boards. As a result, I found myself spending a significant amount of time manually browsing through these companies' websites, clicking through each one to find suitable positions. This process proved to be time-consuming and inefficient. With this project, I aim to streamline this process by aggregating all relevant job postings from companies I am interested in, thereby saving time and effort.
