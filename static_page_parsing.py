@@ -92,7 +92,17 @@ def parsing_by_script(**kwargs):
 
 def parsing_by_response(**kwargs):
     position_list = []
-    response = requests.get(kwargs['URL'], headers=kwargs['parameter']["header"])
+    if kwargs['parameters']['method'] == "POST":
+        data = json.dumps(kwargs['parameters']["data_json"])
+        response = requests.post(kwargs['parameters']['server_url'], headers=kwargs['parameters']['headers'], data=data)
+        content = response.json()
+        paths = kwargs['filters']['path'].split(".")
+        for hierarchy in paths:
+            content = content[hierarchy]
+        for item in content:
+            position_list.append(item[kwargs['filters']["index"]])
+    else: # "GET"
+        response = requests.get(kwargs['URL'], headers=kwargs['parameter']["header"])
 
     return position_list
 
@@ -221,6 +231,16 @@ def parsing(websites):
 #scrape_website("https://fa-evmr-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions?lastSelectedFacet=LOCATIONS&latitude=42.464161155857674&location=239+School+St%2C+Middlesex%2C+MA%2C+United+States&longitude=-71.42785067776921&mode=geolocation&radius=25&radiusUnit=MI&selectedLocationsFacet=300000000480126")
 
 if __name__ == "__main__":
-    websites = [{"company_name": "Seagate", "URL": "https://seagatecareers.com/search/?createNewAlert=false&q=&locationsearch=MA&optionsFacetsDD_country=&optionsFacetsDD_dept=&optionsFacetsDD_customfield1=&optionsFacetsDD_lang=", "website_type": "static_xpath", "parameters": {"xpath_query": "//a[@class='jobTitle-link fontcolor777e3f51b432dec0']/text()", "index_num": 0}, "filters": [], "available": "True"}]
+    websites = [{"company_name": "Curriculum", 
+                 "URL": "https://curriculumassociates.wd5.myworkdayjobs.com/External?locationHierarchy1=c42169f49ec90117ff4c5acd0701f8da", 
+                 "website_type": "static_response", 
+                 "parameters": {"server_url": "https://curriculumassociates.wd5.myworkdayjobs.com/wday/cxs/curriculumassociates/External/jobs", 
+                                "headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0", 
+                                            "Content-Type": "application/json"}, 
+                                "method": "POST", 
+                                "data_json": {"appliedFacets":{"locationHierarchy1": ["c42169f49ec90117ff4c5acd0701f8da"]}}, 
+                                "index_num": 0}, 
+                "filters": {"path": "jobPostings", "index": "title"}, 
+                "available": "True"}]
     results = parsing(websites)
     #print("Parsing results = ", results)
